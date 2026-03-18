@@ -1,380 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Initiative Meeting Hours — Mario</title>
   <style>
-    :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --border: #2e3350;
-      --ai-color: #6c8cff;
-      --ai-light: #4b6bff22;
-      --comp-color: #ff8c6c;
-      --comp-light: #ff6b4422;
-      --text: #e8eaf6;
-      --muted: #8890b0;
-      --pill-bg: #2e3350;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 40px 24px;
-    }
-
-    .container { max-width: 860px; margin: 0 auto; }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    header h1 span { color: var(--muted); font-weight: 400; font-size: 14px; display: block; margin-top: 4px; }
-    .badge {
-      font-size: 12px;
-      background: var(--pill-bg);
-      color: var(--muted);
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-    .badge strong { color: var(--text); }
-
-    /* Summary cards */
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-    }
-    .card.ai::before { background: var(--ai-color); }
-    .card.comp::before { background: var(--comp-color); }
-
-    .card-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-    .card.ai .card-label { color: var(--ai-color); }
-    .card.comp .card-label { color: var(--comp-color); }
-
-    .card-hours {
-      font-size: 44px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1;
-    }
-    .card-hours span { font-size: 18px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-    .card-meta {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      gap: 16px;
-    }
-    .card-meta strong { color: var(--text); }
-
-    /* Visual bar */
-    .bar-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-    .bar-section h2 {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 20px;
-    }
-    .bar-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .bar-row:last-child { margin-bottom: 0; }
-    .bar-label {
-      width: 130px;
-      flex-shrink: 0;
-      font-size: 13px;
-      color: var(--text);
-      text-align: right;
-    }
-    .bar-track {
-      flex: 1;
-      height: 28px;
-      background: var(--surface2);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #fff;
-      transition: width 0.8s ease;
-      min-width: 40px;
-    }
-    .bar-fill.ai { background: var(--ai-color); }
-    .bar-fill.comp { background: var(--comp-color); }
-
-    /* Meeting list */
-    .meetings-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    .meetings-section h2 {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 16px;
-    }
-
-    .initiative-group { margin-bottom: 24px; }
-    .initiative-group:last-child { margin-bottom: 0; }
-    .initiative-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .dot.ai { background: var(--ai-color); }
-    .dot.comp { background: var(--comp-color); }
-    .initiative-header span {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .initiative-header.ai span { color: var(--ai-color); }
-    .initiative-header.comp span { color: var(--comp-color); }
-
-    .meeting-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-bottom: 4px;
-      font-size: 13px;
-    }
-    .meeting-item:hover { background: var(--surface2); }
-    .meeting-item .name { color: var(--text); flex: 1; }
-    .meeting-item .date { color: var(--muted); font-size: 11px; margin: 0 12px; white-space: nowrap; }
-    .meeting-item .dur {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-    .meeting-item.ai .dur { background: var(--ai-light); color: var(--ai-color); }
-    .meeting-item.comp .dur { background: var(--comp-light); color: var(--comp-color); }
-
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 20px 0;
-    }
-
-    footer {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    footer a { color: var(--muted); text-decoration: none; }
-    footer a:hover { color: var(--text); }
+    :root { --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:#2e3350;--ai-color:#6c8cff;--ai-light:#4b6bff22;--comp-color:#ff8c6c;--comp-light:#ff6b4422;--text:#e8eaf6;--muted:#8890b0;--pill-bg:#2e3350; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:40px 24px;}
+    .container{max-width:860px;margin:0 auto;}
+    header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:12px;}
+    header h1{font-size:22px;font-weight:700;letter-spacing:-0.3px;}
+    header h1 span{color:var(--muted);font-weight:400;font-size:14px;display:block;margin-top:4px;}
+    .badge{font-size:12px;background:var(--pill-bg);color:var(--muted);padding:5px 12px;border-radius:20px;border:1px solid var(--border);}
+    .badge strong{color:var(--text);}
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
+    @media(max-width:520px){.cards{grid-template-columns:1fr;}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden;}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .card.ai::before{background:var(--ai-color);}.card.comp::before{background:var(--comp-color);}
+    .card-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+    .card.ai .card-label{color:var(--ai-color);}.card.comp .card-label{color:var(--comp-color);}
+    .card-hours{font-size:44px;font-weight:800;letter-spacing:-2px;line-height:1;}
+    .card-hours span{font-size:18px;font-weight:500;color:var(--muted);letter-spacing:0;}
+    .card-meta{margin-top:12px;font-size:13px;color:var(--muted);display:flex;gap:16px;}
+    .card-meta strong{color:var(--text);}
+    .bar-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px;}
+    .bar-section h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:20px;}
+    .bar-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .bar-row:last-child{margin-bottom:0;}
+    .bar-label{width:130px;flex-shrink:0;font-size:13px;color:var(--text);text-align:right;}
+    .bar-track{flex:1;height:28px;background:var(--surface2);border-radius:6px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-size:12px;font-weight:600;color:#fff;min-width:40px;}
+    .bar-fill.ai{background:var(--ai-color);}.bar-fill.comp{background:var(--comp-color);}
+    .meetings-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;}
+    .meetings-section h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px;}
+    .initiative-group{margin-bottom:24px;}.initiative-group:last-child{margin-bottom:0;}
+    .initiative-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+    .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .dot.ai{background:var(--ai-color);}.dot.comp{background:var(--comp-color);}
+    .initiative-header span{font-size:13px;font-weight:600;}
+    .initiative-header.ai span{color:var(--ai-color);}.initiative-header.comp span{color:var(--comp-color);}
+    .meeting-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:4px;font-size:13px;}
+    .meeting-item:hover{background:var(--surface2);}
+    .meeting-item .name{color:var(--text);flex:1;}
+    .meeting-item .date{color:var(--muted);font-size:11px;margin:0 12px;white-space:nowrap;}
+    .meeting-item .dur{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+    .meeting-item.ai .dur{background:var(--ai-light);color:var(--ai-color);}
+    .meeting-item.comp .dur{background:var(--comp-light);color:var(--comp-color);}
+    .divider{height:1px;background:var(--border);margin:20px 0;}
+    footer{margin-top:24px;text-align:center;font-size:12px;color:var(--muted);}
+    footer a{color:var(--muted);text-decoration:none;}footer a:hover{color:var(--text);}
   </style>
 </head>
 <body>
 <div class="container">
-
   <header>
-    <h1>
-      Initiative Meeting Hours
-      <span>Mario · mfmedina@addi.com</span>
-    </h1>
-    <div class="badge">
-      Last 30 days &nbsp;·&nbsp; <strong>Feb 15 – Mar 17, 2026</strong>
-    </div>
+    <h1>Initiative Meeting Hours<span>Mario · mfmedina@addi.com</span></h1>
+    <div class="badge">Last 30 days &nbsp;·&nbsp; <strong>Feb 16 – Mar 18, 2026</strong></div>
   </header>
-
-  <!-- Summary Cards -->
   <div class="cards">
     <div class="card ai">
       <div class="card-label">🤖 AI</div>
-      <div class="card-hours">4.5 <span>hrs</span></div>
-      <div class="card-meta">
-        <div><strong>9</strong> meetings</div>
-        <div><strong>270</strong> min total</div>
-      </div>
+      <div class="card-hours">4.50 <span>hrs</span></div>
+      <div class="card-meta"><div><strong>9</strong> meetings</div><div><strong>270</strong> min total</div></div>
     </div>
     <div class="card comp">
       <div class="card-label">💰 Compensation</div>
       <div class="card-hours">2.75 <span>hrs</span></div>
-      <div class="card-meta">
-        <div><strong>3</strong> meetings</div>
-        <div><strong>165</strong> min total</div>
-      </div>
+      <div class="card-meta"><div><strong>3</strong> meetings</div><div><strong>165</strong> min total</div></div>
     </div>
   </div>
-
-  <!-- Bar Chart -->
-  <div class="bar-section">
+  <div clas="bar-section">
     <h2>Hours by Initiative</h2>
-    <div class="bar-row">
-      <div class="bar-label">🤖 AI</div>
-      <div class="bar-track">
-        <!-- 4.5 / 7.25 = 62% -->
-        <div class="bar-fill ai" style="width: 62%;">4.5 hrs</div>
-      </div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">💰 Compensation</div>
-      <div class="bar-track">
-        <!-- 2.75 / 7.25 = 38% -->
-        <div class="bar-fill comp" style="width: 38%;">2.75 hrs</div>
-      </div>
-    </div>
+    <div class="bar-row"><div class="bar-label">💰 AI</div><div class="bar-track"><div class="bar-fill ai" style="width:62%;">4.50 hrs</div></div></div>
+    <div class="bar-row"><div class="bar-label">💰 Compensation</div><div class="bar-track"><div class="bar-fill comp" style="width:38%;">2.75 hrs</div></div></div>
   </div>
-
-  <!-- Meeting Breakdown -->
   <div class="meetings-section">
     <h2>Meeting Breakdown</h2>
-
     <div class="initiative-group">
-      <div class="initiative-header ai">
-        <div class="dot ai"></div>
-        <span>AI — 9 meetings · 4.5 hours</span>
-      </div>
-
+      <div class="initiative-header ai"><div class="dot ai"></div><span>AI — 9 meetings · 4.50 hours</span></div>
       <div class="meeting-item ai">
-        <div class="name">AI Enablement Sync - People</div>
-        <div class="date">Feb 19</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">People AI Enablement - Sync</div>
-        <div class="date">Mar 5</div>
-        <div class="dur">15 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">💬 Ask in #ai-enablement-people</div>
-        <div class="date">Mar 9</div>
-        <div class="dur">15 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">AI Exploration — People Ops</div>
-        <div class="date">Mar 9</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">AI Exploration — English Teachers</div>
-        <div class="date">Mar 10</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">AI Enablement People</div>
-        <div class="date">Mar 10</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">AI Exploration — Talent</div>
-        <div class="date">Mar 12</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">AI Initiatives Meeting — TA</div>
-        <div class="date">Mar 16</div>
-        <div class="dur">30 min</div>
-      </div>
-      <div class="meeting-item ai">
-        <div class="name">People Ops AI Weekly</div>
-        <div class="date">Mar 17</div>
-        <div class="dur">60 min</div>
-      </div>
+  <div class="name">AI Enablement Sync - People</div>
+  <div class="date">Feb 19</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">People AI Enablement - Sync</div>
+  <div class="date">Mar 05</div>
+  <div class="dur">15 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">💬 Ask in #ai-enablement-people</div>
+  <div class="date">Mar 09</div>
+  <div class="dur">15 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">AI Exploration — People Ops</div>
+  <div class="date">Mar 09</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">AI Exploration — English Teachers</div>
+  <div class="date">Mar 10</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">AI Enablement People</div>
+  <div class="date">Mar 10</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">AI Exploration — Talent</div>
+  <div class="date">Mar 12</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">AI Initiatives Meeting — TA</div>
+  <div class="date">Mar 16</div>
+  <div class="dur">30 min</div>
+</div>
+<div class="meeting-item ai">
+  <div class="name">People Ops AI Weekly</div>
+  <div class="date">Mar 17</div>
+  <div class="dur">60 min</div>
+</div>
     </div>
-
     <div class="divider"></div>
-
     <div class="initiative-group">
-      <div class="initiative-header comp">
-        <div class="dot comp"></div>
-        <span>Compensation — 3 meetings · 2.75 hours</span>
-      </div>
-
+      <div class="initiative-header comp"><div class="dot comp"></div><span>Compensation — 3 meetings · 2.75 hours</span></div>
       <div class="meeting-item comp">
-        <div class="name">Jayesh / WTW (Compensation Study)</div>
-        <div class="date">Feb 20</div>
-        <div class="dur">45 min</div>
-      </div>
-      <div class="meeting-item comp">
-        <div class="name">Manish / WTW (Compensation Study)</div>
-        <div class="date">Feb 24</div>
-        <div class="dur">60 min</div>
-      </div>
-      <div class="meeting-item comp">
-        <div class="name">Simon / WTW (Compensation Study)</div>
-        <div class="date">Feb 24</div>
-        <div class="dur">60 min</div>
-      </div>
+  <div class="name">Jayesh / WTW</div>
+  <div class="date">Feb 20</div>
+  <div class="dur">45 min</div>
+</div>
+<div class="meeting-item comp">
+  <div class="name">Manish / WTW</div>
+  <div class="date">Feb 24</div>
+  <div class="dur">60 min</div>
+</div>
+<div class="meeting-item comp">
+  <div class="name">Simon : WTW</div>
+  <div class="date">Feb 24</div>
+  <div class="dur">60 min</div>
+</div>
     </div>
   </div>
-
-  <footer>
-    Last refreshed: <strong>Mar 17, 2026</strong> &nbsp;·&nbsp;
-    Data from <a href="https://calendar.google.com" target="_blank">Google Calendar</a> &nbsp;·&nbsp;
-    Auto-updates daily via Claude
-  </footer>
-
+  <footer>Last refreshed: <strong>Mar 18, 2026</strong> &nbsp;·&nbsp; Data from <a href="https://calendar.google.com" target="_blank">Google Calendar</a> &nbsp;·&nbsp; Auto-updates daily via Claude</footer>
 </div>
 </body>
 </html>
